@@ -1,9 +1,12 @@
 #!/usr/bin/python3
-
+"""
+view for State objects that handles all default RESTFul API
+"""
 from api.v1.views import app_views
 from flask import jsonify, request, abort
 from models import storage
 from models.state import State
+
 
 @app_views.route('/states', methods=['GET'])
 def get_states():
@@ -14,6 +17,7 @@ def get_states():
         states_list.append(state.to_dict())
     return jsonify(states_list)
 
+
 @app_views.route('/states/<state_id>', methods=['GET'])
 def get_state(state_id):
     """ get state """
@@ -22,8 +26,10 @@ def get_state(state_id):
         return jsonify({'error': 'Not found'}), 404
     return jsonify(state.to_dict())
 
+
 @app_views.route('/states/<state_id>', methods=['DELETE'])
 def delete_state(state_id):
+    """ delete state """
     state = storage.get(State, state_id)
     if state is None:
         return jsonify({'error': 'Not found'}), 404
@@ -31,28 +37,28 @@ def delete_state(state_id):
     storage.save()
     return jsonify({}), 200
 
+
 @app_views.route('/states', methods=['POST'])
 def create_state():
     """ create state """
     if not request.is_json:
         abort(400, 'Not a JSON')
-    
     data = request.get_json()
     if 'name' not in data:
         abort(400, 'Missing name')
-    
     state = State(**data)
     storage.new(state)
     storage.save()
 
     return jsonify(state.to_dict()), 201
 
+
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
 def update_state(state_id):
-    state =storage.get(State, state_id)
+    """ update state """
+    state = storage.get(State, state_id)
     if state is None:
         abort(404)
-    
     if not request.is_json:
         abort(400, 'Not a JSON')
 
