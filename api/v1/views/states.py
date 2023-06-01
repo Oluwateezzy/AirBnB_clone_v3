@@ -11,7 +11,7 @@ from models.state import State
 @app_views.route('/states', methods=['GET'])
 def get_states():
     """ get all states """
-    states = storage.all(State)
+    states = storage.all("State")
     states_list = []
     for state in states:
         states_list.append(state.to_dict())
