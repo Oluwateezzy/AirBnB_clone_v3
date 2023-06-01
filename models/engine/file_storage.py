@@ -41,7 +41,7 @@ class FileStorage:
             self.__objects[key] = obj
 
     def get(self, cls, id):
-        """Returns the object based on the class"""
+        """Returns the data object based on the class"""
         if cls and id:
             obj = "{}.{}".format(cls, id)
             objs = self.all(cls)
