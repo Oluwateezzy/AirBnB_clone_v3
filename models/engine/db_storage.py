@@ -30,6 +30,10 @@ class DBStorage:
         'State': state.State,
         'User': user.User
     }
+    """CNC - this variable is a dictionary with:
+    keys: Class Names
+    values: Class type (used for instantiation)
+    """
     __engine = None
     __session = None
 

@@ -27,7 +27,10 @@ class FileStorage:
         'State': state.State,
         'User': user.User
     }
-
+    """CNC - this variable is a dictionary with:
+    keys: Class Names
+    values: Class type (used for instantiation)
+    """
     # string - path to the JSON file
     __file_path = "./dev/file.json"
     # dictionary - empty but will store all objects by <class name>.id
@@ -74,10 +77,11 @@ class FileStorage:
         try:
             with open(self.__file_path, 'r') as f:
                 jo = json.load(f)
-            for key in jo:
-                FileStorage.__objects[key] = FileStorage.CNC[jo[key]["__class__"]](**jo[key])
         except:
-            pass
+            return
+        for key in jo:
+            file_dict = FileStorage.CNC[jo[key]["__class__"]]
+            FileStorage.__objects[key] = file_dict(**jo[key])
 
     def delete(self, obj=None):
         """delete obj from __objects if it’s inside"""
