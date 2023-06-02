@@ -18,19 +18,7 @@ classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
 
 class FileStorage:
     """serializes instances to a JSON file & deserializes back to instances"""
-    CNC = {
-        'BaseModel': base_model.BaseModel,
-        'Amenity': amenity.Amenity,
-        'City': city.City,
-        'Place': place.Place,
-        'Review': review.Review,
-        'State': state.State,
-        'User': user.User
-    }
-    """CNC - this variable is a dictionary with:
-    keys: Class Names
-    values: Class type (used for instantiation)
-    """
+
     # string - path to the JSON file
     __file_path = "./dev/file.json"
     # dictionary - empty but will store all objects by <class name>.id
@@ -52,18 +40,6 @@ class FileStorage:
             key = obj.__class__.__name__ + "." + obj.id
             self.__objects[key] = obj
 
-    def get(self, cls, id):
-        """Returns the data object based on the class"""
-        if cls and id:
-            obj = "{}.{}".format(cls, id)
-            objs = self.all(cls)
-            return objs.get(obj)
-        return None
-
-    def count(self, cls):
-        """Returns all object based on the class"""
-        return (len(self.all(cls)))
-
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)"""
         json_objects = {}
@@ -77,19 +53,17 @@ class FileStorage:
         try:
             with open(self.__file_path, 'r') as f:
                 jo = json.load(f)
+            for key in jo:
+                self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
         except:
-            return
-        for key in jo:
-            file_dict = FileStorage.CNC[jo[key]["__class__"]]
-            FileStorage.__objects[key] = file_dict(**jo[key])
+            pass
 
     def delete(self, obj=None):
         """delete obj from __objects if it’s inside"""
         if obj is not None:
             key = obj.__class__.__name__ + '.' + obj.id
             if key in self.__objects:
-                del FileStorage.__objects[key]
-                self.save()
+                del self.__objects[key]
 
     def close(self):
         """call reload() method for deserializing the JSON file to objects"""
