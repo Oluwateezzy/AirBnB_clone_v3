@@ -18,9 +18,18 @@ classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
 
 class FileStorage:
     """serializes instances to a JSON file & deserializes back to instances"""
+    CNC = {
+        'BaseModel': base_model.BaseModel,
+        'Amenity': amenity.Amenity,
+        'City': city.City,
+        'Place': place.Place,
+        'Review': review.Review,
+        'State': state.State,
+        'User': user.User
+    }
 
     # string - path to the JSON file
-    __file_path = "file.json"
+    __file_path = "./dev/file.json"
     # dictionary - empty but will store all objects by <class name>.id
     __objects = {}
 
@@ -66,7 +75,7 @@ class FileStorage:
             with open(self.__file_path, 'r') as f:
                 jo = json.load(f)
             for key in jo:
-                self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
+                FileStorage.__objects[key] = FileStorage.CNC[jo[key]["__class__"]](**jo[key])
         except:
             pass
 
@@ -75,7 +84,8 @@ class FileStorage:
         if obj is not None:
             key = obj.__class__.__name__ + '.' + obj.id
             if key in self.__objects:
-                del self.__objects[key]
+                del FileStorage.__objects[key]
+                self.save()
 
     def close(self):
         """call reload() method for deserializing the JSON file to objects"""
