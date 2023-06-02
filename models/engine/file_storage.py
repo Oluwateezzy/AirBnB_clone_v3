@@ -34,28 +34,21 @@ class FileStorage:
             return new_dict
         return self.__objects
 
-     def get(self, cls, id):
+    def get(self, cls, id):
         """
-        fetches specific object
-        :param cls: class of object as string
-        :param id: id of object as string
-        :return: found object or None
+            retrieves one object based on class name and id
         """
-        all_class = self.all(cls)
-
-        for obj in all_class.values():
-            if id == str(obj.id):
-                return obj
-
+        if cls and id:
+            fetch = "{}.{}".format(cls, id)
+            all_obj = self.all(cls)
+            return all_obj.get(fetch)
         return None
 
     def count(self, cls=None):
         """
-        count of how many instances of a class
-        :param cls: class name
-        :return: count of instances of a class
+            returns the count of all objects in storage
         """
-        return len(self.all(cls))
+        return (len(self.all(cls)))
 
     def new(self, obj):
         """sets in __objects the obj with key <obj class name>.id"""
